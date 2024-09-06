@@ -1,0 +1,58 @@
+{
+  "users": [
+    {
+      "id": 669334,
+      "username": "hieupham",
+      "password": "$2a$10$LQ9nzUTsc2tGB9D9eJUm0OgsAP6RanE3W3RgL5lhnZ0PP4jBSkG0y",
+      "email": "hp@gmail.com",
+      "role": 1,
+      "profilePicture": "",
+      "status": 1
+    },
+    {
+      "id": 812442,
+      "username": "dinhduong",
+      "password": "$2a$10$7ijlxNu5bVrw3JHrRhxXoepZ02qcyCMS56uf97TsM3HYU.DJRm/Gy",
+      "email": "dd@gmail.com",
+      "role": 0,
+      "profilePicture": "",
+      "status": 1
+    },
+    {
+      "id": 883999,
+      "username": "hoangnam",
+      "password": "$2a$10$UKWy0BgeSwFOfaIZ8VAeR.ZDVb9kX0jwGeHOX6T2WaU2q0folp6LG",
+      "email": "hn@gmail.com",
+      "role": 0,
+      "profilePicture": "",
+      "status": 1
+    },
+    {
+      "id": 526608,
+      "username": "xuannhat",
+      "password": "$2a$10$PowaLDum3zTaqelxdzKEAOH5lj7wAJX5pkOVBw370AZj3dOhs9COG",
+      "email": "xn@gmail.com",
+      "role": 0,
+      "profilePicture": "",
+      "status": 1
+    },
+    {
+      "id": 137736,
+      "username": "nguyenvana",
+      "password": "$2a$10$TXTmoSu.4VGZGGYWeODPseaHy.7AeOMW06NmDvt9klscznvCLnFH.",
+      "email": "nva@gmail.com",
+      "role": 0,
+      "profilePicture": "",
+      "status": 0
+    },
+    {
+      "id": 672685,
+      "username": "levanb",
+      "email": "lvb@gmail.com",
+      "password": "$2a$10$EsxF0iGdtokYGD.qY2Vree8A.WR58rccl5AQFLBFH7QE5CHt/spQK",
+      "role": 0,
+      "profilePicture": "",
+      "status": 1
+    }
+  ]
+}
