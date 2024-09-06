@@ -7,11 +7,10 @@ import {
   IoBook,
   IoLogOut,
 } from "react-icons/io5";
-import UserManagement from "@/app/admin/users/page"; // Import the UserManagement component
-
+import UserManagement from "@/app/admin/users/page";
 const AdminDashboard: React.FC = () => {
   const [activeMenu, setActiveMenu] = useState("user-management");
-  const [userName, setUserName] = useState("Admin"); // Example admin name
+  const [userName, setUserName] = useState("Admin");
 
   const handleLogout = () => {
     // Handle logout logic here

@@ -1,13 +1,19 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { FaSearch, FaSortAlphaDown, FaSortAlphaUp } from "react-icons/fa";
+import {
+  getUsers,
+  updateUser,
+  deleteUser,
+} from "@/services/users/UserServices";
 
 interface User {
   id: number;
   username: string;
   email: string;
+  password: string;
   role: number;
+  profilePicture: string;
   status: number;
 }
 
@@ -23,8 +29,8 @@ export default function UserList() {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get("/api/users");
-      setUsers(response.data);
+      const response = await getUsers();
+      setUsers(response);
     } catch (error) {
       console.error("Error fetching users:", error);
     }
@@ -65,7 +71,7 @@ export default function UserList() {
   const handleSaveChanges = async () => {
     if (selectedUser) {
       try {
-        await axios.patch(`/api/users`, selectedUser);
+        await updateUser(selectedUser);
         await fetchUsers();
         setEditModalIsOpen(false);
       } catch (error) {
@@ -77,7 +83,7 @@ export default function UserList() {
   const handleDeleteUser = async () => {
     if (selectedUser) {
       try {
-        await axios.delete(`/api/users`, { data: { id: selectedUser.id } });
+        await deleteUser(selectedUser.id);
         await fetchUsers();
         setDeleteModalIsOpen(false);
       } catch (error) {

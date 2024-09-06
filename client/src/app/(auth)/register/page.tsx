@@ -3,9 +3,9 @@ import React, { useState } from "react";
 import { FaUser, FaLock, FaFacebook, FaGoogle } from "react-icons/fa";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { AiOutlineMail } from "react-icons/ai";
-import axios from "axios";
-import bcrypt from "bcryptjs"; // bcrypt for password hashing
-
+import bcrypt from "bcryptjs";
+import { createUser } from "@/services/user/UserServices"; // Import hàm createUser từ services_users
+import baseUrl from "@/app/api/index";
 export default function Page() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -16,16 +16,16 @@ export default function Page() {
   const [modalMessage, setModalMessage] = useState("");
   const [showModal, setShowModal] = useState(false);
 
-  // Validate email format
+  //kiểm tra email
   const isValidEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
 
-  // Check for duplicate username
+  //kiểm tra trùng username
   const checkUsernameExists = async (username: string) => {
     try {
-      const response = await axios.get("http://localhost:3000/api/users");
+      const response = await baseUrl.get("/users");
       const users = response.data;
       return users.some((user: any) => user.username === username);
     } catch (error) {
@@ -34,7 +34,7 @@ export default function Page() {
     }
   };
 
-  // Generate a random ID using Math.random
+  //id randum
   const generateRandomId = () => {
     return Math.floor(Math.random() * 1000000);
   };
@@ -79,10 +79,7 @@ export default function Page() {
     };
 
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/users",
-        newUser
-      );
+      await createUser(newUser); // Sử dụng hàm createUser từ dịch vụ
       setModalMessage("Đăng ký thành công!");
       setShowModal(true);
       setUsername("");
