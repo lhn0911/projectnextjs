@@ -1,6 +1,8 @@
 "use client";
 import React, { useState } from "react";
 import { IoPerson, IoDocumentText, IoBook, IoLogOut } from "react-icons/io5";
+import { FaFileCircleQuestion } from "react-icons/fa6";
+import { FaFileArchive } from "react-icons/fa";
 import UserManagement from "@/app/admin/users/page"; // User Management Component
 import ExamManagement from "@/app/admin/exam/page"; // Exam Management Component
 import SubjectManagement from "@/app/admin/subject/page"; // Subject Management Component
@@ -13,7 +15,6 @@ const AdminDashboard: React.FC = () => {
 
   const handleLogout = () => {
     console.log("Admin logged out");
-    // Add logout logic here, e.g., clearing session, redirecting
   };
 
   return (
@@ -53,7 +54,7 @@ const AdminDashboard: React.FC = () => {
             }`}
             onClick={() => setActiveMenu("exam-management")}
           >
-            <IoBook className="inline-block mr-2" /> Quản lý đề thi
+            <FaFileArchive className="inline-block mr-2" /> Quản lý đề thi
           </li>
           <li
             className={`mb-2 cursor-pointer ${
@@ -61,7 +62,8 @@ const AdminDashboard: React.FC = () => {
             }`}
             onClick={() => setActiveMenu("question-management")}
           >
-            <IoBook className="inline-block mr-2" /> Quản lý câu hỏi
+            <FaFileCircleQuestion className="inline-block mr-2" /> Quản lý câu
+            hỏi
           </li>
           <li
             className={`mb-2 cursor-pointer ${
