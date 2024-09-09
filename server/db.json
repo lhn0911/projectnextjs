@@ -75,21 +75,21 @@
       "title": "Môn Toán",
       "description": "Luyện thi đại học môn toán",
       "coursesId": 1,
-      "img": ""
+      "img": "https://booktoan.com/wp-content/uploads/2015/10/giai-tich12-cb.jpg"
     },
     {
       "id": 2,
       "title": "Vật Lý lớp 11",
       "description": "Luyện thi vật lý lớp 11",
       "coursesId": 2,
-      "img": ""
+      "img": "https://images.thuvienpdf.com/003/OCP2MqRSbx.webp"
     },
     {
       "id": 3,
       "title": "Hóa học lớp 10",
       "description": "Luyện thi Hóa học lớp 10",
       "coursesId": 2,
-      "img": ""
+      "img": "https://hieusach24h.com/wp-content/uploads/2021/09/Hoa-hoc-10-1.jpg"
     }
   ],
   "exams": [
@@ -120,7 +120,11 @@
       "id": 1,
       "questions": "phương trình có nghiệm X= ? X2-2X+1=0",
       "examId": 1,
-      "options": ["0", "1", "2, 3"],
+      "options": [
+        "0",
+        "1",
+        "2, 3"
+      ],
       "answer": "1"
     },
     {
