@@ -15,6 +15,7 @@ interface Exam {
   duration: number;
   examSubjectId: number;
 }
+
 export default function ExamsPage() {
   const [exams, setExams] = useState<Exam[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -25,6 +26,13 @@ export default function ExamsPage() {
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [addModalIsOpen, setAddModalIsOpen] = useState(false);
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
+  const [newExam, setNewExam] = useState<Exam>({
+    id: 0,
+    title: "",
+    description: "",
+    duration: 0,
+    examSubjectId: 0,
+  });
 
   const fetchExams = async () => {
     try {
@@ -44,11 +52,9 @@ export default function ExamsPage() {
       exam.title.toLowerCase().includes(searchTerm.toLowerCase())
     )
     .sort((a, b) => {
-      if (sortOrder === "asc") {
-        return a.title.localeCompare(b.title);
-      } else {
-        return b.title.localeCompare(a.title);
-      }
+      return sortOrder === "asc"
+        ? a.title.localeCompare(b.title)
+        : b.title.localeCompare(a.title);
     });
 
   const indexOfLastExam = currentPage * examsPerPage;
@@ -63,6 +69,13 @@ export default function ExamsPage() {
   };
 
   const handleAdd = () => {
+    setNewExam({
+      id: 0,
+      title: "",
+      description: "",
+      duration: 0,
+      examSubjectId: 0,
+    });
     setAddModalIsOpen(true);
   };
 
@@ -83,7 +96,7 @@ export default function ExamsPage() {
     }
   };
 
-  const handleAddExam = async (newExam: Exam) => {
+  const handleAddExam = async () => {
     try {
       await addExam(newExam);
       await fetchExams();
@@ -143,7 +156,6 @@ export default function ExamsPage() {
             <th className="py-2 px-4 border-b text-center">Tiêu đề</th>
             <th className="py-2 px-4 border-b text-center">Mô tả</th>
             <th className="py-2 px-4 border-b text-center">Khóa học ID</th>
-            <th className="py-2 px-4 border-b text-center">Ảnh</th>
             <th className="py-2 px-4 border-b text-center">Hành động</th>
           </tr>
         </thead>
@@ -156,10 +168,7 @@ export default function ExamsPage() {
                 {exam.description}
               </td>
               <td className="py-2 px-4 border-b text-center">
-                {exam.coursesId}
-              </td>
-              <td className="py-2 px-4 border-b text-center">
-                <img src={exam.img} alt={exam.title} width="50" />
+                {exam.examSubjectId}
               </td>
               <td className="py-2 px-4 border-b text-center">
                 <button
@@ -233,40 +242,43 @@ export default function ExamsPage() {
               <label className="block text-left mb-2">Khóa học ID</label>
               <input
                 type="number"
-                value={selectedExam.coursesId || ""}
+                value={selectedExam.examSubjectId || ""}
                 onChange={(e) =>
                   setSelectedExam(
-                    (prev) => prev && { ...prev, coursesId: +e.target.value }
+                    (prev) =>
+                      prev && { ...prev, examSubjectId: +e.target.value }
                   )
                 }
                 className="border border-gray-300 rounded-md py-2 px-4 w-full"
               />
             </div>
             <div className="mb-4">
-              <label className="block text-left mb-2">Ảnh</label>
+              <label className="block text-left mb-2">Thời gian (phút)</label>
               <input
-                type="text"
-                value={selectedExam.img || ""}
+                type="number"
+                value={selectedExam.duration || ""}
                 onChange={(e) =>
                   setSelectedExam(
-                    (prev) => prev && { ...prev, img: e.target.value }
+                    (prev) => prev && { ...prev, duration: +e.target.value }
                   )
                 }
                 className="border border-gray-300 rounded-md py-2 px-4 w-full"
               />
             </div>
-            <button
-              onClick={handleSaveChanges}
-              className="bg-blue-500 text-white py-2 px-4 rounded-md"
-            >
-              Lưu
-            </button>
-            <button
-              onClick={closeModal}
-              className="ml-4 bg-gray-500 text-white py-2 px-4 rounded-md"
-            >
-              Đóng
-            </button>
+            <div className="flex justify-end">
+              <button
+                onClick={handleSaveChanges}
+                className="bg-blue-500 text-white px-4 py-2 rounded mr-2"
+              >
+                Lưu
+              </button>
+              <button
+                onClick={closeModal}
+                className="bg-gray-500 text-white px-4 py-2 rounded"
+              >
+                Hủy
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -279,9 +291,9 @@ export default function ExamsPage() {
               <label className="block text-left mb-2">Tiêu đề</label>
               <input
                 type="text"
-                value={selectedExam?.title || ""}
+                value={newExam.title}
                 onChange={(e) =>
-                  setSelectedExam({ ...selectedExam, title: e.target.value })
+                  setNewExam({ ...newExam, title: e.target.value })
                 }
                 className="border border-gray-300 rounded-md py-2 px-4 w-full"
               />
@@ -290,12 +302,9 @@ export default function ExamsPage() {
               <label className="block text-left mb-2">Mô tả</label>
               <input
                 type="text"
-                value={selectedExam?.description || ""}
+                value={newExam.description}
                 onChange={(e) =>
-                  setSelectedExam({
-                    ...selectedExam,
-                    description: e.target.value,
-                  })
+                  setNewExam({ ...newExam, description: e.target.value })
                 }
                 className="border border-gray-300 rounded-md py-2 px-4 w-full"
               />
@@ -304,49 +313,45 @@ export default function ExamsPage() {
               <label className="block text-left mb-2">Khóa học ID</label>
               <input
                 type="number"
-                value={selectedExam?.coursesId || ""}
+                value={newExam.examSubjectId}
                 onChange={(e) =>
-                  setSelectedExam({
-                    ...selectedExam,
-                    coursesId: +e.target.value,
-                  })
+                  setNewExam({ ...newExam, examSubjectId: +e.target.value })
                 }
                 className="border border-gray-300 rounded-md py-2 px-4 w-full"
               />
             </div>
             <div className="mb-4">
-              <label className="block text-left mb-2">Ảnh</label>
+              <label className="block text-left mb-2">Thời gian (phút)</label>
               <input
-                type="text"
-                value={selectedExam?.img || ""}
+                type="number"
+                value={newExam.duration}
                 onChange={(e) =>
-                  setSelectedExam({
-                    ...selectedExam,
-                    img: e.target.value,
-                  })
+                  setNewExam({ ...newExam, duration: +e.target.value })
                 }
                 className="border border-gray-300 rounded-md py-2 px-4 w-full"
               />
             </div>
-            <button
-              onClick={() => handleAddExam(selectedExam as Exam)}
-              className="bg-green-500 text-white py-2 px-4 rounded-md"
-            >
-              Thêm
-            </button>
-            <button
-              onClick={closeModal}
-              className="ml-4 bg-gray-500 text-white py-2 px-4 rounded-md"
-            >
-              Đóng
-            </button>
+            <div className="flex justify-end">
+              <button
+                onClick={handleAddExam}
+                className="bg-green-500 text-white px-4 py-2 rounded mr-2"
+              >
+                Thêm
+              </button>
+              <button
+                onClick={closeModal}
+                className="bg-gray-500 text-white px-4 py-2 rounded"
+              >
+                Hủy
+              </button>
+            </div>
           </div>
         </div>
       )}
 
       {deleteModalIsOpen && selectedExam && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-4 rounded-md w-1/3">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-6 rounded-md text-center">
             <h2 className="text-xl mb-4">Xóa đề thi</h2>
             <p>Bạn có chắc chắn muốn xóa đề thi {selectedExam.title}?</p>
             <div className="flex justify-end mt-4">
@@ -357,10 +362,10 @@ export default function ExamsPage() {
                 Xóa
               </button>
               <button
-                onClick={() => setDeleteModalIsOpen(false)}
+                onClick={closeModal}
                 className="bg-gray-500 text-white px-4 py-2 rounded"
               >
-                Đóng
+                Hủy
               </button>
             </div>
           </div>
