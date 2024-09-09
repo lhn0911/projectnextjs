@@ -5,7 +5,7 @@ import {
   getUsers,
   updateUser,
   deleteUser,
-} from "@/services/users/UserServices";
+} from "@/services/admin/UserServices";
 
 interface User {
   id: number;

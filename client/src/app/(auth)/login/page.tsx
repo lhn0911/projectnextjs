@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { FaLock, FaFacebook, FaGoogle } from "react-icons/fa";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { AiOutlineMail } from "react-icons/ai";
-import axios from "axios";
+import baseURL from "@/app/api/index";
 import bcrypt from "bcryptjs";
 import { useRouter } from "next/navigation";
 
@@ -16,28 +16,37 @@ const Login: React.FC = () => {
   const router = useRouter();
 
   const handleLogin = async () => {
-    try {
-      const response = await axios.get("/api/users");
-      const users = response.data;
+    if (!email || !password) {
+      setModalContent("Vui lòng điền đầy đủ email và mật khẩu.");
+      setIsModalOpen(true);
+      return;
+    }
 
+    try {
+      const response = await baseURL.get("/users");
+      const users = response.data;
       const user = users.find((user: any) => user.email === email);
 
       if (user) {
         const isPasswordValid = await bcrypt.compare(password, user.password);
 
         if (isPasswordValid) {
-          if (user.role === 1) {
-            setModalContent("Chào mừng admin!");
+          if (user.status === 0) {
+            setModalContent(
+              "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ admin."
+            );
             setIsModalOpen(true);
-            setTimeout(() => {
-              router.push("/admin");
-            }, 2000);
           } else {
-            if (user.status === 0) {
-              setModalContent(
-                "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ admin."
-              );
+            // Save user to localStorage
+            localStorage.setItem("userLogin", JSON.stringify(user));
+
+            // Handle role-based redirection
+            if (user.role === 1) {
+              setModalContent("Chào mừng admin!");
               setIsModalOpen(true);
+              setTimeout(() => {
+                router.push("/admin");
+              }, 2000);
             } else {
               setModalContent("Đăng nhập thành công!");
               setIsModalOpen(true);

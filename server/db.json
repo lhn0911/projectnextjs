@@ -43,7 +43,7 @@
       "email": "nva@gmail.com",
       "role": 0,
       "profilePicture": "",
-      "status": 0
+      "status": 1
     },
     {
       "id": 672685,
@@ -53,6 +53,101 @@
       "role": 0,
       "profilePicture": "",
       "status": 1
+    }
+  ],
+  "courses": [
+    {
+      "id": 1,
+      "title": "khóa luyện thi đại học",
+      "description": "khóa luyện thi cho học sinh chuẩn bị thi đại học",
+      "img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRD1mZjfsqjG0BHlWVlqdh_UaulXTGp8Yxzjw&s"
+    },
+    {
+      "id": 2,
+      "title": "khóa luyện thi THPT",
+      "description": "Khóa học dành cho học sinh 10,11,12",
+      "img": "https://khaitam.edu.vn/wp-content/uploads/2021/10/anh-khoa-luyen-thi-dai-hoc.jpg"
+    }
+  ],
+  "subjects": [
+    {
+      "id": 1,
+      "title": "Môn Toán",
+      "description": "Luyện thi đại học môn toán",
+      "coursesId": 1,
+      "img": ""
+    },
+    {
+      "id": 2,
+      "title": "Vật Lý lớp 11",
+      "description": "Luyện thi vật lý lớp 11",
+      "coursesId": 2,
+      "img": ""
+    },
+    {
+      "id": 3,
+      "title": "Hóa học lớp 10",
+      "description": "Luyện thi Hóa học lớp 10",
+      "coursesId": 2,
+      "img": ""
+    }
+  ],
+  "exams": [
+    {
+      "id": 1,
+      "title": "Đề thi Toán học THPT Chuyên Lam Sơn Thanh Hóa",
+      "description": "Đề thi Toán Học năm 2023",
+      "duration": 90,
+      "examSubjectId": 1
+    },
+    {
+      "id": 2,
+      "title": "Đề thi Vật Lý cơ bản lớp 11",
+      "description": "Đề thi gồm các câu hỏi cơ bản về Vật Lý 11",
+      "duration": 60,
+      "examSubjectId": 2
+    },
+    {
+      "id": 3,
+      "title": "Đề thi Hóa học cơ bản lớp 10",
+      "description": "Đề thi gồm các câu hỏi cơ bản về Hóa học 10",
+      "duration": 45,
+      "examSubjectId": 3
+    }
+  ],
+  "questions": [
+    {
+      "id": 1,
+      "questions": "phương trình có nghiệm X= ? X2-2X+1=0",
+      "examId": 1,
+      "options": ["0", "1", "2, 3"],
+      "answer": "1"
+    },
+    {
+      "id": 2,
+      "questions": "Định lý Pythagore áp dụng cho loại tam giác nào?",
+      "examId": 2,
+      "options": [
+        "Tam giác vuông",
+        "Tam giác cân",
+        "Tam giác đều",
+        "Tam giác thường"
+      ],
+      "answer": "Tam giác vuông"
+    }
+  ],
+  "userAnswers": [
+    {
+      "id": 1,
+      "userId": 669334,
+      "examId": 1,
+      "score": 15
+    },
+    {
+      "id": 2,
+      "userId": 883999,
+      "examId": 2,
+      "score": 8
     }
   ]
 }

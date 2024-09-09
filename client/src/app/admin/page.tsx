@@ -1,20 +1,19 @@
 "use client";
 import React, { useState } from "react";
-import {
-  IoMenu,
-  IoPerson,
-  IoDocumentText,
-  IoBook,
-  IoLogOut,
-} from "react-icons/io5";
-import UserManagement from "@/app/admin/users/page";
+import { IoPerson, IoDocumentText, IoBook, IoLogOut } from "react-icons/io5";
+import UserManagement from "@/app/admin/users/page"; // User Management Component
+import ExamManagement from "@/app/admin/exam/page"; // Exam Management Component
+import SubjectManagement from "@/app/admin/subject/page"; // Subject Management Component
+import QuestionManagement from "@/app/admin/question/page"; // Question Management Component
+import ProfileManagement from "@/app/admin/profile/page"; // Profile Management Component
+import CourseManagement from "@/app/admin/course/page"; // Course Management Component
+
 const AdminDashboard: React.FC = () => {
   const [activeMenu, setActiveMenu] = useState("user-management");
-  const [userName, setUserName] = useState("Admin");
 
   const handleLogout = () => {
-    // Handle logout logic here
     console.log("Admin logged out");
+    // Add logout logic here, e.g., clearing session, redirecting
   };
 
   return (
@@ -33,19 +32,36 @@ const AdminDashboard: React.FC = () => {
           </li>
           <li
             className={`mb-2 cursor-pointer ${
+              activeMenu === "course-management" ? "bg-gray-700" : ""
+            }`}
+            onClick={() => setActiveMenu("course-management")}
+          >
+            <IoDocumentText className="inline-block mr-2" /> Quản lý khóa luyện
+            thi
+          </li>
+          <li
+            className={`mb-2 cursor-pointer ${
+              activeMenu === "subject-management" ? "bg-gray-700" : ""
+            }`}
+            onClick={() => setActiveMenu("subject-management")}
+          >
+            <IoBook className="inline-block mr-2" /> Quản lý môn thi
+          </li>
+          <li
+            className={`mb-2 cursor-pointer ${
               activeMenu === "exam-management" ? "bg-gray-700" : ""
             }`}
             onClick={() => setActiveMenu("exam-management")}
           >
-            <IoDocumentText className="inline-block mr-2" /> Quản lý đề thi
+            <IoBook className="inline-block mr-2" /> Quản lý đề thi
           </li>
           <li
             className={`mb-2 cursor-pointer ${
-              activeMenu === "lesson-management" ? "bg-gray-700" : ""
+              activeMenu === "question-management" ? "bg-gray-700" : ""
             }`}
-            onClick={() => setActiveMenu("lesson-management")}
+            onClick={() => setActiveMenu("question-management")}
           >
-            <IoBook className="inline-block mr-2" /> Quản lý bài học
+            <IoBook className="inline-block mr-2" /> Quản lý câu hỏi
           </li>
           <li
             className={`mb-2 cursor-pointer ${
@@ -64,26 +80,11 @@ const AdminDashboard: React.FC = () => {
       {/* Main Content Area */}
       <div className="flex-1 p-4">
         {activeMenu === "user-management" && <UserManagement />}
-        {activeMenu === "exam-management" && (
-          <div>
-            <h2 className="text-xl font-semibold mb-4">Danh sách đề thi</h2>
-            {/* Render exam management functionalities here */}
-          </div>
-        )}
-        {activeMenu === "lesson-management" && (
-          <div>
-            <h2 className="text-xl font-semibold mb-4">Danh sách bài học</h2>
-            {/* Render lesson management functionalities here */}
-          </div>
-        )}
-        {activeMenu === "profile-management" && (
-          <div>
-            <h2 className="text-xl font-semibold mb-4">
-              Chỉnh sửa thông tin cá nhân
-            </h2>
-            {/* Render profile management functionalities here */}
-          </div>
-        )}
+        {activeMenu === "course-management" && <CourseManagement />}
+        {activeMenu === "subject-management" && <SubjectManagement />}
+        {activeMenu === "exam-management" && <ExamManagement />}
+        {activeMenu === "question-management" && <QuestionManagement />}
+        {activeMenu === "profile-management" && <ProfileManagement />}
       </div>
     </div>
   );

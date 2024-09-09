@@ -21,13 +21,6 @@ export async function getUsers() {
   }
 }
 
-export async function createUser(user: User){
-  try {
-    await baseUrl.post("/users", user);
-  } catch (error) {
-    throw new Error('Error creating user');
-  }
-}
 
 export async function deleteUser(id: number){
   try {
