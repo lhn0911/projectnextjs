@@ -71,7 +71,7 @@ const AdminDashboard: React.FC = () => {
             }`}
             onClick={() => setActiveMenu("profile-management")}
           >
-            <IoPerson className="inline-block mr-2" /> Chỉnh sửa thông tin
+            <IoPerson className="inline-block mr-2" /> Thông tin cá nhân
           </li>
           <li className="cursor-pointer" onClick={handleLogout}>
             <IoLogOut className="inline-block mr-2" /> Đăng xuất
