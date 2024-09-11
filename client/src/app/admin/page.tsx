@@ -9,11 +9,17 @@ import SubjectManagement from "@/app/admin/subject/page"; // Subject Management 
 import QuestionManagement from "@/app/admin/question/page"; // Question Management Component
 import ProfileManagement from "@/app/admin/profile/page"; // Profile Management Component
 import CourseManagement from "@/app/admin/course/page"; // Course Management Component
+import { useRouter } from "next/navigation";
 
 const AdminDashboard: React.FC = () => {
   const [activeMenu, setActiveMenu] = useState("user-management");
+  const route = useRouter(); // Sử dụng useRouter để chuyển hướng
 
   const handleLogout = () => {
+    localStorage.removeItem("userLogin");
+
+    // Chuyển hướng người dùng về trang login
+    route.push("/login");
     console.log("Admin logged out");
   };
 

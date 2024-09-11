@@ -4,7 +4,7 @@ import { FaSearch, FaSortAlphaDown, FaSortAlphaUp } from "react-icons/fa";
 import { useRouter } from "next/navigation"; // Import useRouter để điều hướng
 import Header from "@/app/layout/header/Header"; // Import Header layout
 import { getSubject } from "@/services/admin/SubjectServices";
-
+import Banner from "@/app/layout/banner/Banner";
 interface Subject {
   id: number;
   title: string;
@@ -90,7 +90,7 @@ export default function Subject() {
     <>
       {/* Import Header */}
       <Header />
-
+      <Banner />
       {/* Main Content */}
       <main className="min-h-screen bg-gray-100 py-8">
         <div className="container mx-auto">

@@ -4,7 +4,7 @@ import { FaSearch, FaSortAlphaDown, FaSortAlphaUp } from "react-icons/fa";
 import Header from "@/app/layout/header/Header";
 import { getExam } from "@/services/admin/ExamServices";
 import { useRouter } from "next/navigation";
-
+import Banner from "@/app/layout/banner/Banner";
 interface Exam {
   id: number;
   title: string;
@@ -37,7 +37,6 @@ export default function ExamsList() {
     fetchExams();
   }, []);
 
-  // Filter exams by search query and sort them
   const filteredExams = exams
     .filter(
       (exam) =>
@@ -83,7 +82,7 @@ export default function ExamsList() {
     <>
       {/* Import Header */}
       <Header />
-
+      <Banner />
       {/* Main Content */}
       <main className="min-h-screen bg-gray-100 py-8">
         <div className="container mx-auto">

@@ -1,8 +1,8 @@
 "use client";
 import React from "react";
 import Header from "@/app/layout/header/Header";
+import Banner from "@/app/layout/banner/Banner";
 import { useRouter } from "next/navigation";
-
 export default function Page() {
   const router = useRouter();
 
@@ -13,6 +13,7 @@ export default function Page() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
+      <Banner />
       <main className="flex-1 bg-gray-100 p-6">
         <h2 className="text-3xl font-bold mb-6">Trang web thi online</h2>
 

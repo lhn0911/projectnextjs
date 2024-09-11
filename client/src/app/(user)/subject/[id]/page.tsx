@@ -3,7 +3,7 @@ import { useRouter, useParams } from "next/navigation";
 import Header from "@/app/layout/header/Header"; // Import Header layout
 import { getSubjectById } from "@/services/user/SubjectServices"; // Import hàm lấy dữ liệu môn học theo id
 import { useEffect, useState } from "react";
-
+import Banner from "@/app/layout/banner/Banner";
 interface Subject {
   id: number;
   title: string;
@@ -40,7 +40,7 @@ export default function SubjectDetail() {
     <>
       {/* Header */}
       <Header />
-
+      <Banner />
       {/* Main Content */}
       <main className="min-h-screen bg-gray-100 py-8">
         <div className="container mx-auto">

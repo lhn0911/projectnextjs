@@ -1,6 +1,16 @@
+import { useRouter } from "next/navigation";
 import React from "react";
 
 export default function Header() {
+  const route = useRouter(); // Sử dụng useRouter để chuyển hướng
+
+  const handleLogout = () => {
+    localStorage.removeItem("userLogin");
+
+    // Chuyển hướng người dùng về trang login
+    route.push("/login");
+    console.log("Admin logged out");
+  };
   return (
     <header className="bg-blue-900 text-white py-4 px-6 flex justify-between items-center">
       <div className="flex items-center">
@@ -34,7 +44,7 @@ export default function Header() {
             </a>
           </li>
           <li>
-            <a href="/logout" className="hover:underline">
+            <a href="#" onClick={handleLogout} className="hover:underline">
               Đăng xuất
             </a>
           </li>

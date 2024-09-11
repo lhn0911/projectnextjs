@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { FaSearch, FaSortAlphaDown, FaSortAlphaUp } from "react-icons/fa";
 import { getCourses } from "@/services/admin/CourseServices";
 import Header from "@/app/layout/header/Header";
+import Banner from "@/app/layout/banner/Banner";
 interface Course {
   id: number;
   title: string;
@@ -57,6 +58,7 @@ export default function Course() {
     <>
       {" "}
       <Header />
+      <Banner></Banner>
       <main className="min-h-screen bg-gray-100 py-8">
         <div className="flex items-center mb-4">
           <input
