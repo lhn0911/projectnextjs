@@ -1,16 +1,33 @@
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState, useEffect } from "react";
+
+interface User {
+  profilePicture: string;
+  username: string;
+}
 
 export default function Header() {
-  const route = useRouter(); // Sử dụng useRouter để chuyển hướng
+  const [userLogin, setUserLogin] = useState<User | null>(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const route = useRouter();
+
+  useEffect(() => {
+    const userData = localStorage.getItem("userLogin");
+    if (userData) {
+      try {
+        const parsedData = JSON.parse(userData) as User;
+        setUserLogin(parsedData);
+      } catch (error) {
+        console.error("Error parsing user data:", error);
+      }
+    }
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("userLogin");
-
-    // Chuyển hướng người dùng về trang login
     route.push("/login");
-    console.log("Admin logged out");
   };
+
   return (
     <header className="bg-blue-900 text-white py-4 px-6 flex justify-between items-center">
       <div className="flex items-center">
@@ -21,6 +38,7 @@ export default function Header() {
         />
         <h1 className="text-2xl font-bold">Online Exam</h1>
       </div>
+
       <nav>
         <ul className="flex space-x-6">
           <li>
@@ -38,16 +56,45 @@ export default function Header() {
               Bài thi
             </a>
           </li>
-          <li>
-            <a href="/profile" className="hover:underline">
-              Thông tin cá nhân
-            </a>
-          </li>
-          <li>
-            <a href="#" onClick={handleLogout} className="hover:underline">
-              Đăng xuất
-            </a>
-          </li>
+
+          {userLogin ? (
+            <li className="relative">
+              <div
+                className="flex items-center cursor-pointer"
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+              >
+                <img
+                  src={userLogin.profilePicture}
+                  alt="User Avatar"
+                  className="h-8 w-8 rounded-full mr-2"
+                />
+                <span>{userLogin.username}</span>
+              </div>
+
+              {dropdownOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-white text-black rounded-md shadow-lg z-10">
+                  <a
+                    href="/profile"
+                    className="block px-4 py-2 text-sm hover:bg-gray-200"
+                  >
+                    Thông tin cá nhân
+                  </a>
+                  <button
+                    onClick={handleLogout}
+                    className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-200"
+                  >
+                    Đăng xuất
+                  </button>
+                </div>
+              )}
+            </li>
+          ) : (
+            <li>
+              <a href="/login" className="hover:underline">
+                Đăng nhập
+              </a>
+            </li>
+          )}
         </ul>
       </nav>
     </header>
