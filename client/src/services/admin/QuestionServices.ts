@@ -11,17 +11,21 @@ interface Question {
 export async function getQuestions() {
   try {
     const response = await baseUrl.get("/questions");
-    return response.data;
+    return response.data; // Trả về dữ liệu từ response
   } catch (error) {
-    throw new Error("Error fetching Questions");
+    // Xử lý lỗi cụ thể và ném ra thông báo lỗi
+    console.error("Error fetching questions:", error);
+    throw new Error("Error fetching questions. Please try again later.");
   }
 }
 
 export async function addQuestion(newQuestion: Question) {
   try {
-    await baseUrl.post("/questions", newQuestion);
+    const response = await baseUrl.post("/questions", newQuestion);
+    return response.data; // Trả về dữ liệu câu hỏi mới đã được thêm
   } catch (error) {
-    throw new Error("Error adding Question");
+    console.error("Error adding question:", error);
+    throw new Error("Error adding question. Please try again later.");
   }
 }
 
@@ -29,14 +33,25 @@ export async function deleteQuestion(id: number) {
   try {
     await baseUrl.delete(`/questions/${id}`);
   } catch (error) {
-    throw new Error("Error deleting Question");
+    console.error("Error deleting question:", error);
+    throw new Error("Error deleting question. Please try again later.");
   }
 }
 
 export async function updateQuestion(updatedQuestion: Question) {
   try {
-    await baseUrl.put(`/questions/${updatedQuestion.id}`, updatedQuestion);
+    const response = await baseUrl.put(`/questions/${updatedQuestion.id}`, updatedQuestion);
+    return response.data; // Trả về dữ liệu câu hỏi đã được cập nhật
   } catch (error) {
-    throw new Error("Error updating Question");
+    console.error("Error updating question:", error);
+    throw new Error("Error updating question. Please try again later.");
+  }
+}
+export async function getExams() {
+  try {
+      const response = await baseUrl.get("/exams");
+      return response.data;
+  } catch (error) {
+      throw new Error('Error fetching Exam');
   }
 }

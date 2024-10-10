@@ -5,13 +5,14 @@ import Header from "@/app/layout/header/Header";
 import { getExam } from "@/services/admin/ExamServices";
 import { useRouter } from "next/navigation";
 import Banner from "@/app/layout/banner/Banner";
+
 interface Exam {
   id: number;
   title: string;
   description: string;
   duration: number;
   examSubjectId: number;
-  img?: string; // Thêm thuộc tính img vào interface
+  img?: string;
 }
 
 export default function ExamsList() {
@@ -24,12 +25,13 @@ export default function ExamsList() {
   const [detailModalIsOpen, setDetailModalIsOpen] = useState(false);
   const router = useRouter();
 
+  // Lấy danh sách đề thi từ API
   const fetchExams = async () => {
     try {
       const response = await getExam();
       setExams(response);
     } catch (error) {
-      console.error("Error fetching subjects:", error);
+      console.error("Error fetching exams:", error);
     }
   };
 
@@ -37,19 +39,16 @@ export default function ExamsList() {
     fetchExams();
   }, []);
 
+  // Lọc và sắp xếp các đề thi theo tìm kiếm và thứ tự
   const filteredExams = exams
-    .filter(
-      (exam) =>
-        exam.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        exam.description.toLowerCase().includes(searchQuery.toLowerCase())
+    .filter((exam) =>
+      exam.title.toLowerCase().includes(searchQuery.toLowerCase())
     )
-    .sort((a, b) => {
-      if (sortOrder === "asc") {
-        return a.title.localeCompare(b.title);
-      } else {
-        return b.title.localeCompare(a.title);
-      }
-    });
+    .sort((a, b) =>
+      sortOrder === "asc"
+        ? a.title.localeCompare(b.title)
+        : b.title.localeCompare(a.title)
+    );
 
   const indexOfLastExam = currentPage * examsPerPage;
   const indexOfFirstExam = indexOfLastExam - examsPerPage;
@@ -57,40 +56,25 @@ export default function ExamsList() {
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
-  // Handle opening the detail modal
-  const handleDetails = (exam: Exam) => {
-    setSelectedExam(exam);
-    setDetailModalIsOpen(true);
-  };
-
-  // Handle closing the detail modal
-  const closeDetailModal = () => {
-    setSelectedExam(null);
-    setDetailModalIsOpen(false);
-  };
-
-  // Điều hướng đến trang làm bài
+  // Điều hướng đến trang câu hỏi của đề thi với examId
   const startExam = (examId: number) => {
-    router.push(`/exam/${examId}`); // Điều hướng đến trang làm bài với ID đề thi
+    router.push(`/questions/${examId}`); // Điều hướng đến trang câu hỏi
   };
+
   const totalPages = Math.ceil(filteredExams.length / examsPerPage);
-  const pageNumbers = [];
-  for (let i = 1; i <= totalPages; i++) {
-    pageNumbers.push(i);
-  }
+  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
+
   return (
     <>
-      {/* Import Header */}
       <Header />
       <Banner />
-      {/* Main Content */}
       <main className="min-h-screen bg-gray-100 py-8">
         <div className="container mx-auto">
           <h1 className="text-3xl font-bold text-center mb-8">
             Danh sách các đề thi
           </h1>
 
-          {/* Search and Sort Functionality */}
+          {/* Tìm kiếm và sắp xếp */}
           <div className="flex justify-between items-center mb-4">
             <div className="flex items-center">
               <input
@@ -98,7 +82,7 @@ export default function ExamsList() {
                 placeholder="Tìm kiếm đề thi"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="border p-2 rounded-lg shadow-sm focus:outline-none focus:ring focus:border-blue-300"
+                className="border p-2 rounded-lg shadow-sm focus:outline-none"
               />
               <button
                 onClick={() =>
@@ -106,20 +90,20 @@ export default function ExamsList() {
                     prevOrder === "asc" ? "desc" : "asc"
                   )
                 }
-                className="ml-2 bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 focus:outline-none"
+                className="ml-2 bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600"
               >
                 {sortOrder === "asc" ? <FaSortAlphaDown /> : <FaSortAlphaUp />}
               </button>
             </div>
           </div>
 
-          {/* Exams Grid */}
+          {/* Hiển thị danh sách đề thi */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {currentExams.map((exam) => (
               <div
                 key={exam.id}
                 className="bg-white border rounded-lg shadow-lg overflow-hidden cursor-pointer transition-transform transform hover:scale-105"
-                onClick={() => handleDetails(exam)}
+                onClick={() => startExam(exam.id)} // Khi ấn vào sẽ chuyển sang trang câu hỏi
               >
                 <img
                   src={exam.img}
@@ -137,7 +121,7 @@ export default function ExamsList() {
             ))}
           </div>
 
-          {/* Pagination */}
+          {/* Phân trang */}
           <div className="flex justify-center mt-6 space-x-2">
             {pageNumbers.map((number) => (
               <button
@@ -154,32 +138,6 @@ export default function ExamsList() {
             ))}
           </div>
         </div>
-
-        {/* Detail Modal */}
-        {detailModalIsOpen && selectedExam && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg">
-              <h2 className="text-2xl font-bold mb-4">{selectedExam.title}</h2>
-              <p className="mb-4">{selectedExam.description}</p>
-              <p>Thời gian: {selectedExam.duration} phút</p>
-
-              <div className="flex justify-end gap-4">
-                <button
-                  className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
-                  onClick={() => startExam(selectedExam.id)}
-                >
-                  Chi tiết
-                </button>
-                <button
-                  className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
-                  onClick={closeDetailModal}
-                >
-                  Đóng
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
       </main>
 
       {/* Footer */}

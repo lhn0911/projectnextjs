@@ -47,12 +47,12 @@ export default function Header() {
             </a>
           </li>
           <li>
-            <a href="/course" className="hover:underline">
+            <a href="#" className="hover:underline">
               Khóa học
             </a>
           </li>
           <li>
-            <a href="/exam" className="hover:underline">
+            <a href="#" className="hover:underline">
               Bài thi
             </a>
           </li>

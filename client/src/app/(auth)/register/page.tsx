@@ -6,6 +6,8 @@ import { AiOutlineMail } from "react-icons/ai";
 import bcrypt from "bcryptjs";
 import { createUser } from "@/services/user/UserServices"; // Import hàm createUser từ services_users
 import baseUrl from "@/app/api/index";
+import { useRouter } from "next/navigation"; // Import useRouter
+
 export default function Page() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -15,14 +17,15 @@ export default function Page() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const router = useRouter(); // Khai báo useRouter
 
-  //kiểm tra email
+  // Kiểm tra email
   const isValidEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+    return emailRegex.test(email) && email.endsWith("@gmail.com"); // Kiểm tra phải là gmail
   };
 
-  //kiểm tra trùng username
+  // Kiểm tra trùng username
   const checkUsernameExists = async (username: string) => {
     try {
       const response = await baseUrl.get("/users");
@@ -34,14 +37,14 @@ export default function Page() {
     }
   };
 
-  //id randum
+  // ID random
   const generateRandomId = () => {
     return Math.floor(Math.random() * 1000000);
   };
 
   const handleRegister = async () => {
     if (!isValidEmail(email)) {
-      setModalMessage("Email không hợp lệ. Vui lòng kiểm tra lại.");
+      setModalMessage("Email phải là dạng @gmail.com. Vui lòng kiểm tra lại.");
       setShowModal(true);
       return;
     }
@@ -65,23 +68,26 @@ export default function Page() {
       return;
     }
 
-    // hàm mã hóa pass
+    // Hàm mã hóa pass
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = {
-      id: generateRandomId(), // random id
+      id: generateRandomId(), // Random ID
       username,
       email,
-      password: hashedPassword, // mã hóa pass
-      role: 0, //mặc định 0 là user
-      profilePicture: "", //mặc định trống
-      status: 1, // mặc định không khóa
+      password: hashedPassword, // Mã hóa pass
+      role: 0, // Mặc định 0 là user
+      profilePicture: "", // Mặc định trống
+      status: 1, // Mặc định không khóa
     };
 
     try {
       await createUser(newUser); // Sử dụng hàm createUser từ dịch vụ
-      setModalMessage("Đăng ký thành công!");
+      setModalMessage("Đăng ký thành công! ");
       setShowModal(true);
+      setTimeout(() => {
+        router.push("/login"); // Chuyển hướng đến trang đăng nhập
+      }, 2000); // Thời gian chờ trước khi chuyển hướng
       setUsername("");
       setEmail("");
       setPassword("");
@@ -178,7 +184,7 @@ export default function Page() {
         </div>
         <p className="text-gray-500 mt-6">
           Bạn đã có tài khoản?{" "}
-          <a href="#" className="text-blue-500 hover:underline">
+          <a href="/login" className="text-blue-500 hover:underline">
             Đăng nhập ngay!
           </a>
         </p>
@@ -190,7 +196,7 @@ export default function Page() {
             <p>{modalMessage}</p>
             <button
               onClick={closeModal}
-              className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-md"
+              className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
             >
               Đóng
             </button>

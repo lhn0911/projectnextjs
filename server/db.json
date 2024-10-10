@@ -14,7 +14,7 @@
       "username": "dinhduong",
       "password": "$2a$10$7ijlxNu5bVrw3JHrRhxXoepZ02qcyCMS56uf97TsM3HYU.DJRm/Gy",
       "email": "dd@gmail.com",
-      "role": 0,
+      "role": 1,
       "profilePicture": "",
       "status": 1
     },
@@ -53,6 +53,15 @@
       "role": 0,
       "profilePicture": "",
       "status": 1
+    },
+    {
+      "id": 479635,
+      "username": "haha",
+      "email": "haha@gmail.com",
+      "password": "$2a$10$90Be1bsoLshAQOzsvt1V5OIlWMpH6zloquwzooBC4ZVmSYsL0sV8y",
+      "role": 0,
+      "profilePicture": "",
+      "status": 1
     }
   ],
   "courses": [
@@ -67,6 +76,12 @@
       "title": "khóa luyện thi THPT",
       "description": "Khóa học dành cho học sinh 10,11,12",
       "img": "https://khaitam.edu.vn/wp-content/uploads/2021/10/anh-khoa-luyen-thi-dai-hoc.jpg"
+    },
+    {
+      "id": 3,
+      "title": "Khóa luyện thi cấp 2",
+      "description": "khóa luyện thi 6789",
+      "img": "https://taec.edu.vn/wp-content/uploads/2021/06/luyen-thi-toeic-cap-toc.png"
     }
   ],
   "subjects": [
@@ -76,7 +91,12 @@
       "description": "Luyện thi đại học môn toán",
       "coursesId": 1,
       "img": "https://tailieure.com/wp-content/uploads/2018/10/toan-dai-12-1024x900.jpg",
-      "post": ["bài 1", "bài 2", "bài 3", "bài 4"]
+      "post": [
+        "bài 1",
+        "bài 2",
+        "bài 3",
+        "bài 4"
+      ]
     },
     {
       "id": 2,
@@ -84,7 +104,12 @@
       "description": "Luyện thi vật lý lớp 11",
       "coursesId": 2,
       "img": "https://vatlypt.com/wp-content/uploads/2023-02-25_081803.jpg",
-      "post": ["bài 1", "bài 2", "bài 3", "bài 4"]
+      "post": [
+        "bài 1",
+        "bài 2",
+        "bài 3",
+        "bài 4"
+      ]
     },
     {
       "id": 3,
@@ -92,7 +117,19 @@
       "description": "Luyện thi Hóa học lớp 10",
       "coursesId": 2,
       "img": "https://hieusach24h.com/wp-content/uploads/2021/09/Hoa-hoc-10-1.jpg",
-      "post": ["bài 1", "bài 2", "bài 3", "bài 4"]
+      "post": [
+        "bài 1",
+        "bài 2",
+        "bài 3",
+        "bài 4"
+      ]
+    },
+    {
+      "id": 4,
+      "title": "môn anh",
+      "description": "luyện thi môn tanh",
+      "coursesId": 3,
+      "img": ""
     }
   ],
   "exams": [
@@ -102,49 +139,7 @@
       "description": "Đề thi Toán Học năm 2023",
       "duration": 90,
       "examSubjectId": 1,
-      "img": "https://uommam.vn/wp-content/uploads/2021/11/DETHIDAPAN.png",
-      "questions": [
-        {
-          "id": 1,
-          "questions": "phương trình có nghiệm X= ? X2-2X+1=0",
-          "examId": 1,
-          "options": ["0", "1", "2, 3"],
-          "answer": "1"
-        },
-        {
-          "id": 2,
-          "questions": "Định lý Pythagore áp dụng cho loại tam giác nào?",
-          "examId": 1,
-          "options": [
-            "Tam giác vuông",
-            "Tam giác cân",
-            "Tam giác đều",
-            "Tam giác thường"
-          ],
-          "answer": "Tam giác vuông"
-        },
-        {
-          "id": 3,
-          "questions": "Giải phương trình: X^2 + 3X - 4 = 0",
-          "examId": 1,
-          "options": ["1", "-4", "0", "-1"],
-          "answer": "-4"
-        },
-        {
-          "id": 4,
-          "questions": "Tính diện tích hình tròn bán kính 5 cm. (S = πr^2)",
-          "examId": 1,
-          "options": ["25π", "50π", "75π", "100π"],
-          "answer": "25π"
-        },
-        {
-          "id": 5,
-          "questions": "Tìm đạo hàm của hàm số: f(x) = 3x^3 - 2x + 1",
-          "examId": 1,
-          "options": ["3x^2 - 2", "9x^2 - 2", "6x^2 - 2", "3x^2 - 2x"],
-          "answer": "9x^2 - 2"
-        }
-      ]
+      "img": "https://uommam.vn/wp-content/uploads/2021/11/DETHIDAPAN.png"
     },
     {
       "id": 2,
@@ -152,69 +147,7 @@
       "description": "Đề thi gồm các câu hỏi cơ bản về Vật Lý 11",
       "duration": 60,
       "examSubjectId": 2,
-      "img": "http://thptbinhmy.edu.vn/upload/21264/fck/ntduong/hinhnen2022(8).png",
-      "questions": [
-        {
-          "id": 1,
-          "questions": "Định luật bảo toàn năng lượng phát biểu như thế nào?",
-          "examId": 2,
-          "options": [
-            "Năng lượng trong một hệ cô lập luôn được bảo toàn.",
-            "Năng lượng có thể được tạo ra hoặc tiêu hủy.",
-            "Năng lượng trong một hệ cô lập có thể thay đổi tùy theo điều kiện.",
-            "Năng lượng chỉ có thể được chuyển đổi từ dạng này sang dạng khác."
-          ],
-          "answer": "Năng lượng trong một hệ cô lập luôn được bảo toàn."
-        },
-        {
-          "id": 2,
-          "questions": "Trong một hệ thống vật lý, lực nào được xem là lực hấp dẫn?",
-          "examId": 2,
-          "options": [
-            "Lực điện từ",
-            "Lực hấp dẫn",
-            "Lực đàn hồi",
-            "Lực ma sát"
-          ],
-          "answer": "Lực hấp dẫn"
-        },
-        {
-          "id": 3,
-          "questions": "Nêu định nghĩa về công của lực trong vật lý?",
-          "examId": 2,
-          "options": [
-            "Công của lực là sự thay đổi năng lượng của một vật.",
-            "Công của lực là tích số của lực và khoảng cách di chuyển.",
-            "Công của lực là sự biến đổi tốc độ của vật.",
-            "Công của lực là sự thay đổi khối lượng của vật."
-          ],
-          "answer": "Công của lực là tích số của lực và khoảng cách di chuyển."
-        },
-        {
-          "id": 4,
-          "questions": "Nguyên lý hoạt động của máy phát điện là gì?",
-          "examId": 2,
-          "options": [
-            "Chuyển đổi cơ năng thành điện năng.",
-            "Chuyển đổi điện năng thành cơ năng.",
-            "Chuyển đổi nhiệt năng thành điện năng.",
-            "Chuyển đổi ánh sáng thành điện năng."
-          ],
-          "answer": "Chuyển đổi cơ năng thành điện năng."
-        },
-        {
-          "id": 5,
-          "questions": "Định nghĩa về hiện tượng cộng hưởng trong vật lý?",
-          "examId": 2,
-          "options": [
-            "Hiện tượng cộng hưởng là sự gia tăng biên độ dao động của một hệ khi tần số của lực tác dụng trùng với tần số dao động tự nhiên của hệ.",
-            "Hiện tượng cộng hưởng là sự giảm biên độ dao động của một hệ khi tần số của lực tác dụng không trùng với tần số dao động tự nhiên của hệ.",
-            "Hiện tượng cộng hưởng là sự thay đổi tốc độ của một hệ khi có sự tác động của lực.",
-            "Hiện tượng cộng hưởng là sự thay đổi nhiệt độ của một hệ khi có sự tác động của nhiệt."
-          ],
-          "answer": "Hiện tượng cộng hưởng là sự gia tăng biên độ dao động của một hệ khi tần số của lực tác dụng trùng với tần số dao động tự nhiên của hệ."
-        }
-      ]
+      "img": "http://thptbinhmy.edu.vn/upload/21264/fck/ntduong/hinhnen2022(8).png"
     },
     {
       "id": 3,
@@ -222,54 +155,7 @@
       "description": "Đề thi gồm các câu hỏi cơ bản về Hóa học 10",
       "duration": 45,
       "examSubjectId": 3,
-      "img": "http://thptbinhmy.edu.vn/upload/21264/fck/ntduong/hinhnen2022(7).png",
-      "questions": [
-        {
-          "id": 1,
-          "questions": "Công thức hóa học của nước là gì?",
-          "examId": 3,
-          "options": ["H2O", "CO2", "NaCl", "HCl"],
-          "answer": "H2O"
-        },
-        {
-          "id": 2,
-          "questions": "Chất nào sau đây là một axit?",
-          "examId": 3,
-          "options": ["NaOH", "HCl", "KCl", "NH3"],
-          "answer": "HCl"
-        },
-        {
-          "id": 3,
-          "questions": "Phản ứng hóa học nào sau đây là phản ứng oxi hóa-khử?",
-          "examId": 3,
-          "options": [
-            "2H2 + O2 → 2H2O",
-            "NaOH + HCl → NaCl + H2O",
-            "CaCO3 → CaO + CO2",
-            "Fe + S → FeS"
-          ],
-          "answer": "2H2 + O2 → 2H2O"
-        },
-        {
-          "id": 4,
-          "questions": "Tính chất hóa học nào của kim loại nhôm?",
-          "examId": 3,
-          "options": [
-            "Tạo hợp chất với oxy",
-            "Tạo hợp chất với axit chỉ khi đun nóng",
-            "Tạo hợp chất với nước",
-            "Tạo hợp chất với các muối"
-          ],
-          "answer": "Tạo hợp chất với oxy"
-        },
-        {
-          "id": 5,
-          "questions": "Nếu cho 100 ml dung dịch HCl nồng độ 0.5 M vào 200 ml dung dịch NaOH nồng độ 0.25 M, dung dịch sau phản ứng sẽ có pH là bao nhiêu?",
-          "examId": 3,
-          "options": ["pH = 7", "pH < 7", "pH > 7", "Không xác định được"],
-          "answer": "pH = 7"
-        }
-      ]
+      "img": "http://thptbinhmy.edu.vn/upload/21264/fck/ntduong/hinhnen2022(7).png"
     }
   ],
   "questions": [
@@ -277,13 +163,18 @@
       "id": 1,
       "questions": "phương trình có nghiệm X= ? X2-2X+1=0",
       "examId": 1,
-      "options": ["0", "1", "2, 3"],
+      "options": [
+        "0",
+        "1",
+        "2, 3",
+        "vô nghiệm"
+      ],
       "answer": "1"
     },
     {
       "id": 2,
       "questions": "Định lý Pythagore áp dụng cho loại tam giác nào?",
-      "examId": 2,
+      "examId": 1,
       "options": [
         "Tam giác vuông",
         "Tam giác cân",
@@ -291,6 +182,66 @@
         "Tam giác thường"
       ],
       "answer": "Tam giác vuông"
+    },
+    {
+      "examId": 1,
+      "questions": "1+1=?",
+      "options": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "answer": "2",
+      "id": 3
+    },
+    {
+      "examId": 3,
+      "questions": "Công thức hóa học của nước là gì?",
+      "options": [
+        "H2O",
+        "CO2",
+        "NACl",
+        "HCl"
+      ],
+      "answer": "H2O",
+      "id": 4
+    },
+    {
+      "questions": "Chất nào sau đây là một axit?",
+      "examId": 3,
+      "options": [
+        "NaOH",
+        "HCl",
+        "KCl",
+        "NH3"
+      ],
+      "answer": "HCl",
+      "id": 5
+    },
+    {
+      "questions": "Phản ứng hóa học nào sau đây là phản ứng oxi-hóa-khử",
+      "examId": 3,
+      "options": [
+        "2H2+O2-->2H2O",
+        "H2+O2-->HOHO",
+        "NaOH+HCl-->NaCl+H2O",
+        "2NaOH+2HCl-->NaCl+2H2O"
+      ],
+      "answer": "2H2+O2-->2H2O",
+      "id": 6
+    },
+    {
+      "examId": 2,
+      "questions": "Đơn vị của công là gì?",
+      "options": [
+        "J(joule)",
+        "W(oát)",
+        "A(Ampe)",
+        "ml(mililit)"
+      ],
+      "answer": "J(joule)",
+      "id": 7
     }
   ],
   "userAnswers": [

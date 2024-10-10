@@ -6,6 +6,7 @@ import {
   deleteSubject,
   addSubject,
   updateSubject,
+  getCourses,
 } from "@/services/admin/SubjectServices";
 
 interface Subject {
@@ -16,8 +17,75 @@ interface Subject {
   img: string;
 }
 
+interface Course {
+  id: number;
+  title: string;
+  description: string;
+}
+
+const SubjectDetailModal = ({ subject, courses, onClose, onEdit }: any) => {
+  const associatedCourse = courses.find(
+    (course: any) => course.id === subject.coursesId
+  );
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+      <div className="bg-white p-6 rounded-md w-2/3 max-h-[90vh] overflow-y-auto">
+        <h2 className="text-2xl font-bold mb-4">{subject.title}</h2>
+        <div className="mb-4">
+          {subject.img ? (
+            <img
+              src={subject.img}
+              alt={subject.title}
+              className="w-full h-64 object-cover rounded-md"
+            />
+          ) : (
+            <div className="w-full h-64 bg-gray-200 flex items-center justify-center rounded-md">
+              No Image Available
+            </div>
+          )}
+        </div>
+        <div className="mb-4">
+          <h3 className="text-lg font-semibold mb-2">Mô tả:</h3>
+          <p>{subject.description}</p>
+        </div>
+        <div className="mb-4">
+          <h3 className="text-lg font-semibold mb-2">Khóa học liên quan:</h3>
+          {associatedCourse ? (
+            <div>
+              <p>
+                <strong>Tên khóa học:</strong> {associatedCourse.title}
+              </p>
+              <p>
+                <strong>Mô tả khóa học:</strong> {associatedCourse.description}
+              </p>
+            </div>
+          ) : (
+            <p>Không có thông tin về khóa học liên quan.</p>
+          )}
+        </div>
+        <div className="flex justify-end mt-4">
+          <button
+            onClick={() => onEdit(subject)}
+            className="bg-yellow-500 text-white px-4 py-2 rounded mr-2"
+          >
+            Sửa
+          </button>
+          <button
+            onClick={onClose}
+            className="bg-gray-500 text-white px-4 py-2 rounded"
+          >
+            Đóng
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default function Subject() {
   const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [courses, setCourses] = useState<Course[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [subjectsPerPage] = useState(5);
   const [searchQuery, setSearchQuery] = useState("");
@@ -45,8 +113,18 @@ export default function Subject() {
     }
   };
 
+  const fetchCourses = async () => {
+    try {
+      const response = await getCourses();
+      setCourses(response);
+    } catch (error) {
+      console.error("Error fetching courses:", error);
+    }
+  };
+
   useEffect(() => {
     fetchSubjects();
+    fetchCourses();
   }, []);
 
   const filteredSubjects = subjects
@@ -120,28 +198,40 @@ export default function Subject() {
       await addSubject(newSubject);
       await fetchSubjects();
       setAddModalIsOpen(false);
+      setNewSubject({
+        id: 0,
+        title: "",
+        description: "",
+        coursesId: 0,
+        img: "",
+      });
     } catch (error) {
       console.error("Error adding subject:", error);
     }
   };
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
+    const { name, value } = e.target;
+
     if (editSubject) {
       setEditSubject({
         ...editSubject,
-        [e.target.name]: e.target.value,
+        [name]: name === "coursesId" ? parseInt(value) : value,
       });
     }
     if (
-      e.target.name === "title" ||
-      e.target.name === "description" ||
-      e.target.name === "img"
+      name === "title" ||
+      name === "description" ||
+      name === "img" ||
+      name === "coursesId"
     ) {
       setNewSubject({
         ...newSubject,
-        [e.target.name]: e.target.value,
+        [name]: name === "coursesId" ? parseInt(value) : value,
       });
     }
   };
@@ -231,45 +321,96 @@ export default function Subject() {
         )}
       </div>
 
+      {/* Detail Modal */}
       {detailModalIsOpen && selectedSubject && (
+        <SubjectDetailModal
+          subject={selectedSubject}
+          courses={courses}
+          onClose={() => setDetailModalIsOpen(false)}
+          onEdit={handleEdit}
+        />
+      )}
+
+      {/* Edit Modal */}
+      {editModalIsOpen && editSubject && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-6 rounded-md">
-            <h2 className="text-2xl mb-4">{selectedSubject.title}</h2>
-            {selectedSubject.img ? (
-              <img
-                src={selectedSubject.img}
-                alt={selectedSubject.title}
-                className="w-full h-64 object-cover mb-4"
-              />
-            ) : (
-              <div className="w-full h-64 bg-gray-200 flex items-center justify-center mb-4">
-                No Image
+          <div className="bg-white p-6 rounded-md w-1/3">
+            <h2 className="text-2xl mb-4">Chỉnh sửa môn thi</h2>
+            <form onSubmit={handleUpdateSubject}>
+              <div className="mb-4">
+                <label className="block mb-2">Tiêu đề</label>
+                <input
+                  type="text"
+                  name="title"
+                  value={editSubject.title}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded-md py-2 px-4 w-full"
+                  required
+                />
               </div>
-            )}
-            <p>{selectedSubject.description}</p>
-            <div className="flex justify-between mt-4">
-              <button
-                onClick={() => handleEdit(selectedSubject)}
-                className="bg-yellow-500 text-white px-4 py-2 rounded"
-              >
-                Sửa
-              </button>
-              <button
-                onClick={handleCloseModal}
-                className="bg-blue-500 text-white px-4 py-2 rounded"
-              >
-                Đóng
-              </button>
-            </div>
+              <div className="mb-4">
+                <label className="block mb-2">Mô tả</label>
+                <textarea
+                  name="description"
+                  value={editSubject.description}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded-md py-2 px-4 w-full"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block mb-2">Ảnh (URL)</label>
+                <input
+                  type="text"
+                  name="img"
+                  value={editSubject.img}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded-md py-2 px-4 w-full"
+                  placeholder="Đường dẫn ảnh"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block mb-2">Chọn khóa học</label>
+                <select
+                  name="coursesId"
+                  value={editSubject.coursesId}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded-md py-2 px-4 w-full"
+                  required
+                >
+                  <option value={0}>Chọn khóa học</option>
+                  {courses.map((course) => (
+                    <option key={course.id} value={course.id}>
+                      {course.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex justify-end mt-4">
+                <button
+                  type="submit"
+                  className="bg-blue-500 text-white px-4 py-2 rounded mr-2"
+                >
+                  Lưu
+                </button>
+                <button
+                  onClick={handleCloseModal}
+                  className="bg-gray-500 text-white px-4 py-2 rounded"
+                >
+                  Đóng
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
 
+      {/* Delete Modal */}
       {deleteModalIsOpen && selectedSubject && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-4 rounded-md w-1/3">
-            <h2 className="text-xl mb-4">Xóa khóa học</h2>
-            <p>Bạn có chắc chắn muốn xóa khóa học {selectedSubject.title}?</p>
+            <h2 className="text-xl mb-4">Xóa môn thi</h2>
+            <p>Bạn có chắc chắn muốn xóa môn thi {selectedSubject.title}?</p>
             <div className="flex justify-end mt-4">
               <button
                 onClick={handleDeleteSubject}
@@ -281,75 +422,17 @@ export default function Subject() {
                 onClick={() => setDeleteModalIsOpen(false)}
                 className="bg-gray-500 text-white px-4 py-2 rounded"
               >
-                Đóng
+                Hủy
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {editModalIsOpen && editSubject && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-6 rounded-md w-1/3">
-            <h2 className="text-2xl mb-4">Chỉnh sửa khóa học</h2>
-            <form onSubmit={handleUpdateSubject}>
-              <div className="mb-4">
-                <label className="block mb-2">Tiêu đề</label>
-                <input
-                  type="text"
-                  value={editSubject.title}
-                  onChange={(e) =>
-                    setEditSubject({ ...editSubject, title: e.target.value })
-                  }
-                  className="border border-gray-300 rounded-md py-2 px-4 w-full"
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block mb-2">Mô tả</label>
-                <textarea
-                  value={editSubject.description}
-                  onChange={(e) =>
-                    setEditSubject({
-                      ...editSubject,
-                      description: e.target.value,
-                    })
-                  }
-                  className="border border-gray-300 rounded-md py-2 px-4 w-full"
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block mb-2">Ảnh (URL)</label>
-                <input
-                  type="text"
-                  value={editSubject.img}
-                  onChange={(e) =>
-                    setEditSubject({ ...editSubject, img: e.target.value })
-                  }
-                  className="border border-gray-300 rounded-md py-2 px-4 w-full"
-                />
-              </div>
-              <div className="flex justify-end mt-4">
-                <button
-                  type="submit"
-                  className="bg-blue-500 text-white px-4 py-2 rounded mr-2"
-                >
-                  Lưu
-                </button>
-                <button
-                  onClick={() => setEditModalIsOpen(false)}
-                  className="bg-gray-500 text-white px-4 py-2 rounded"
-                >
-                  Đóng
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
       {addModalIsOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
           <div className="bg-white p-6 rounded-md w-1/3">
-            <h2 className="text-2xl mb-4">Thêm khóa học</h2>
+            <h2 className="text-2xl mb-4">Thêm môn thi</h2>
             <form onSubmit={handleAddSubject}>
               <div className="mb-4">
                 <label className="block mb-2">Tiêu đề</label>
@@ -357,10 +440,9 @@ export default function Subject() {
                   type="text"
                   name="title"
                   value={newSubject.title}
-                  onChange={(e) =>
-                    setNewSubject({ ...newSubject, title: e.target.value })
-                  }
+                  onChange={handleInputChange}
                   className="border border-gray-300 rounded-md py-2 px-4 w-full"
+                  required
                 />
               </div>
               <div className="mb-4">
@@ -368,13 +450,9 @@ export default function Subject() {
                 <textarea
                   name="description"
                   value={newSubject.description}
-                  onChange={(e) =>
-                    setNewSubject({
-                      ...newSubject,
-                      description: e.target.value,
-                    })
-                  }
+                  onChange={handleInputChange}
                   className="border border-gray-300 rounded-md py-2 px-4 w-full"
+                  required
                 />
               </div>
               <div className="mb-4">
@@ -383,12 +461,31 @@ export default function Subject() {
                   type="text"
                   name="img"
                   value={newSubject.img}
-                  onChange={(e) =>
-                    setNewSubject({ ...newSubject, img: e.target.value })
-                  }
+                  onChange={handleInputChange}
                   className="border border-gray-300 rounded-md py-2 px-4 w-full"
+                  placeholder="Đường dẫn ảnh"
                 />
               </div>
+
+              {/* Dropdown chọn khóa học */}
+              <div className="mb-4">
+                <label className="block mb-2">Chọn khóa học</label>
+                <select
+                  name="coursesId"
+                  value={newSubject.coursesId}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded-md py-2 px-4 w-full"
+                  required
+                >
+                  <option value={0}>Chọn khóa học</option>
+                  {courses.map((course) => (
+                    <option key={course.id} value={course.id}>
+                      {course.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               <div className="flex justify-end mt-4">
                 <button
                   type="submit"
@@ -397,7 +494,7 @@ export default function Subject() {
                   Thêm
                 </button>
                 <button
-                  onClick={() => setAddModalIsOpen(false)}
+                  onClick={handleCloseModal}
                   className="bg-gray-500 text-white px-4 py-2 rounded"
                 >
                   Đóng

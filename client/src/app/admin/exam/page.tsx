@@ -6,6 +6,7 @@ import {
   addExam,
   updateExam,
   deleteExam,
+  getExamSubjects, // Giả sử bạn có một hàm này để lấy danh sách môn thi
 } from "@/services/admin/ExamServices";
 
 interface Exam {
@@ -16,8 +17,15 @@ interface Exam {
   examSubjectId: number;
 }
 
+interface ExamSubject {
+  id: number;
+  name: string;
+  title: string;
+}
+
 export default function ExamsPage() {
   const [exams, setExams] = useState<Exam[]>([]);
+  const [examSubjects, setExamSubjects] = useState<ExamSubject[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [examsPerPage] = useState(5);
   const [searchTerm, setSearchTerm] = useState("");
@@ -43,8 +51,18 @@ export default function ExamsPage() {
     }
   };
 
+  const fetchExamSubjects = async () => {
+    try {
+      const response = await getExamSubjects();
+      setExamSubjects(response);
+    } catch (error) {
+      console.error("Error fetching exam subjects:", error);
+    }
+  };
+
   useEffect(() => {
     fetchExams();
+    fetchExamSubjects(); // Lấy danh sách môn thi khi component mount
   }, []);
 
   const filteredExams = exams
@@ -239,24 +257,10 @@ export default function ExamsPage() {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-left mb-2">Khóa học ID</label>
-              <input
-                type="number"
-                value={selectedExam.examSubjectId || ""}
-                onChange={(e) =>
-                  setSelectedExam(
-                    (prev) =>
-                      prev && { ...prev, examSubjectId: +e.target.value }
-                  )
-                }
-                className="border border-gray-300 rounded-md py-2 px-4 w-full"
-              />
-            </div>
-            <div className="mb-4">
               <label className="block text-left mb-2">Thời gian (phút)</label>
               <input
                 type="number"
-                value={selectedExam.duration || ""}
+                value={selectedExam.duration || 0}
                 onChange={(e) =>
                   setSelectedExam(
                     (prev) => prev && { ...prev, duration: +e.target.value }
@@ -265,20 +269,39 @@ export default function ExamsPage() {
                 className="border border-gray-300 rounded-md py-2 px-4 w-full"
               />
             </div>
-            <div className="flex justify-end">
-              <button
-                onClick={handleSaveChanges}
-                className="bg-blue-500 text-white px-4 py-2 rounded mr-2"
+            <div className="mb-4">
+              <label className="block text-left mb-2">Môn thi</label>
+              <select
+                value={selectedExam.examSubjectId || 0}
+                onChange={(e) =>
+                  setSelectedExam(
+                    (prev) =>
+                      prev && { ...prev, examSubjectId: +e.target.value }
+                  )
+                }
+                className="border border-gray-300 rounded-md py-2 px-4 w-full"
               >
-                Lưu
-              </button>
-              <button
-                onClick={closeModal}
-                className="bg-gray-500 text-white px-4 py-2 rounded"
-              >
-                Hủy
-              </button>
+                <option value={0}>Chọn môn thi</option>
+                {examSubjects.map((subject) => (
+                  <option key={subject.id} value={subject.id}>
+                    {subject.title}{" "}
+                    {/* Sử dụng subject.title thay vì subject.name */}
+                  </option>
+                ))}
+              </select>
             </div>
+            <button
+              onClick={handleSaveChanges}
+              className="bg-blue-500 text-white px-4 py-2 rounded"
+            >
+              Lưu thay đổi
+            </button>
+            <button
+              onClick={closeModal}
+              className="ml-2 bg-gray-500 text-white px-4 py-2 rounded"
+            >
+              Đóng
+            </button>
           </div>
         </div>
       )}
@@ -286,14 +309,17 @@ export default function ExamsPage() {
       {addModalIsOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
           <div className="bg-white p-6 rounded-md text-center">
-            <h2 className="text-xl mb-4">Thêm đề thi</h2>
+            <h2 className="text-xl mb-4">Thêm đề thi mới</h2>
             <div className="mb-4">
               <label className="block text-left mb-2">Tiêu đề</label>
               <input
                 type="text"
                 value={newExam.title}
                 onChange={(e) =>
-                  setNewExam({ ...newExam, title: e.target.value })
+                  setNewExam((prev) => ({
+                    ...prev,
+                    title: e.target.value,
+                  }))
                 }
                 className="border border-gray-300 rounded-md py-2 px-4 w-full"
               />
@@ -304,18 +330,10 @@ export default function ExamsPage() {
                 type="text"
                 value={newExam.description}
                 onChange={(e) =>
-                  setNewExam({ ...newExam, description: e.target.value })
-                }
-                className="border border-gray-300 rounded-md py-2 px-4 w-full"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-left mb-2">Khóa học ID</label>
-              <input
-                type="number"
-                value={newExam.examSubjectId}
-                onChange={(e) =>
-                  setNewExam({ ...newExam, examSubjectId: +e.target.value })
+                  setNewExam((prev) => ({
+                    ...prev,
+                    description: e.target.value,
+                  }))
                 }
                 className="border border-gray-300 rounded-md py-2 px-4 w-full"
               />
@@ -326,25 +344,46 @@ export default function ExamsPage() {
                 type="number"
                 value={newExam.duration}
                 onChange={(e) =>
-                  setNewExam({ ...newExam, duration: +e.target.value })
+                  setNewExam((prev) => ({
+                    ...prev,
+                    duration: +e.target.value,
+                  }))
                 }
                 className="border border-gray-300 rounded-md py-2 px-4 w-full"
               />
             </div>
-            <div className="flex justify-end">
-              <button
-                onClick={handleAddExam}
-                className="bg-green-500 text-white px-4 py-2 rounded mr-2"
+            <div className="mb-4">
+              <label className="block text-left mb-2">Môn thi</label>
+              <select
+                value={newExam.examSubjectId}
+                onChange={(e) =>
+                  setNewExam((prev) => ({
+                    ...prev,
+                    examSubjectId: +e.target.value,
+                  }))
+                }
+                className="border border-gray-300 rounded-md py-2 px-4 w-full"
               >
-                Thêm
-              </button>
-              <button
-                onClick={closeModal}
-                className="bg-gray-500 text-white px-4 py-2 rounded"
-              >
-                Hủy
-              </button>
+                <option value={0}>Chọn môn thi</option>
+                {examSubjects.map((subject) => (
+                  <option key={subject.id} value={subject.id}>
+                    {subject.title}
+                  </option>
+                ))}
+              </select>
             </div>
+            <button
+              onClick={handleAddExam}
+              className="bg-green-500 text-white px-4 py-2 rounded"
+            >
+              Thêm Đề Thi
+            </button>
+            <button
+              onClick={closeModal}
+              className="ml-2 bg-gray-500 text-white px-4 py-2 rounded"
+            >
+              Đóng
+            </button>
           </div>
         </div>
       )}
@@ -353,21 +392,19 @@ export default function ExamsPage() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
           <div className="bg-white p-6 rounded-md text-center">
             <h2 className="text-xl mb-4">Xóa đề thi</h2>
-            <p>Bạn có chắc chắn muốn xóa đề thi {selectedExam.title}?</p>
-            <div className="flex justify-end mt-4">
-              <button
-                onClick={handleDeleteExam}
-                className="bg-red-500 text-white px-4 py-2 rounded mr-2"
-              >
-                Xóa
-              </button>
-              <button
-                onClick={closeModal}
-                className="bg-gray-500 text-white px-4 py-2 rounded"
-              >
-                Hủy
-              </button>
-            </div>
+            <p>Bạn có chắc chắn muốn xóa đề thi "{selectedExam.title}"?</p>
+            <button
+              onClick={handleDeleteExam}
+              className="bg-red-500 text-white px-4 py-2 rounded mt-4"
+            >
+              Xóa
+            </button>
+            <button
+              onClick={closeModal}
+              className="ml-2 bg-gray-500 text-white px-4 py-2 rounded mt-4"
+            >
+              Đóng
+            </button>
           </div>
         </div>
       )}

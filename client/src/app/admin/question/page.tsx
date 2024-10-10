@@ -6,6 +6,7 @@ import {
   addQuestion,
   updateQuestion,
   deleteQuestion,
+  getExams,
 } from "@/services/admin/QuestionServices";
 
 interface Question {
@@ -16,8 +17,14 @@ interface Question {
   answer: string;
 }
 
+interface Exam {
+  id: number;
+  title: string;
+}
+
 export default function QuestionsPage() {
   const [questions, setQuestions] = useState<Question[]>([]);
+  const [exams, setExams] = useState<Exam[]>([]); // State để lưu đề thi
   const [currentPage, setCurrentPage] = useState(1);
   const [questionsPerPage] = useState(5);
   const [searchTerm, setSearchTerm] = useState("");
@@ -38,8 +45,19 @@ export default function QuestionsPage() {
     }
   };
 
+  const fetchExams = async () => {
+    // Hàm lấy đề thi
+    try {
+      const response = await getExams();
+      setExams(response);
+    } catch (error) {
+      console.error("Error fetching exams:", error);
+    }
+  };
+
   useEffect(() => {
     fetchQuestions();
+    fetchExams(); // Gọi hàm lấy đề thi
   }, []);
 
   const filteredQuestions = questions
@@ -69,6 +87,7 @@ export default function QuestionsPage() {
   };
 
   const handleAdd = () => {
+    setSelectedQuestion(null); // Đặt selectedQuestion về null để thêm mới
     setAddModalIsOpen(true);
   };
 
@@ -147,44 +166,49 @@ export default function QuestionsPage() {
           <tr>
             <th className="py-2 px-4 border-b">ID</th>
             <th className="py-2 px-4 border-b text-center">Câu hỏi</th>
-            <th className="py-2 px-4 border-b text-center">Khóa học ID</th>
+            <th className="py-2 px-4 border-b text-center">Đề thi</th>
             <th className="py-2 px-4 border-b text-center">Các tùy chọn</th>
             <th className="py-2 px-4 border-b text-center">Đáp án</th>
             <th className="py-2 px-4 border-b text-center">Hành động</th>
           </tr>
         </thead>
         <tbody>
-          {currentQuestions.map((question) => (
-            <tr key={question.id}>
-              <td className="py-2 px-4 border-b text-center">{question.id}</td>
-              <td className="py-2 px-4 border-b text-center">
-                {question.questions}
-              </td>
-              <td className="py-2 px-4 border-b text-center">
-                {question.examId}
-              </td>
-              <td className="py-2 px-4 border-b text-center">
-                {question.options.join(", ")}
-              </td>
-              <td className="py-2 px-4 border-b text-center">
-                {question.answer}
-              </td>
-              <td className="py-2 px-4 border-b text-center">
-                <button
-                  onClick={() => handleEdit(question)}
-                  className="bg-blue-500 text-white px-2 py-1 rounded mr-2"
-                >
-                  Sửa
-                </button>
-                <button
-                  onClick={() => handleDelQuestion(question)}
-                  className="bg-red-500 text-white px-2 py-1 rounded"
-                >
-                  Xóa
-                </button>
-              </td>
-            </tr>
-          ))}
+          {currentQuestions.map((question) => {
+            const exam = exams.find((exam) => exam.id === question.examId); // Tìm đề thi tương ứng
+            return (
+              <tr key={question.id}>
+                <td className="py-2 px-4 border-b text-center">
+                  {question.id}
+                </td>
+                <td className="py-2 px-4 border-b text-center">
+                  {question.questions}
+                </td>
+                <td className="py-2 px-4 border-b text-center">
+                  {exam ? exam.title : "N/A"} {/* Hiển thị tiêu đề đề thi */}
+                </td>
+                <td className="py-2 px-4 border-b text-center">
+                  {question.options.join(", ")}
+                </td>
+                <td className="py-2 px-4 border-b text-center">
+                  {question.answer}
+                </td>
+                <td className="py-2 px-4 border-b text-center">
+                  <button
+                    onClick={() => handleEdit(question)}
+                    className="bg-blue-500 text-white px-2 py-1 rounded mr-2"
+                  >
+                    Sửa
+                  </button>
+                  <button
+                    onClick={() => handleDelQuestion(question)}
+                    className="bg-red-500 text-white px-2 py-1 rounded"
+                  >
+                    Xóa
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
 
@@ -217,9 +241,45 @@ export default function QuestionsPage() {
                 type="text"
                 value={selectedQuestion.questions || ""}
                 onChange={(e) =>
-                  setSelectedQuestion(
-                    (prev) => prev && { ...prev, question: e.target.value }
-                  )
+                  setSelectedQuestion({
+                    ...selectedQuestion,
+                    questions: e.target.value,
+                  })
+                }
+                className="border border-gray-300 rounded-md py-2 px-4 w-full"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-left mb-2">Đề thi</label>
+              <select
+                value={selectedQuestion.examId}
+                onChange={(e) =>
+                  setSelectedQuestion({
+                    ...selectedQuestion,
+                    examId: parseInt(e.target.value), // Chuyển đổi thành số
+                  })
+                }
+                className="border border-gray-300 rounded-md py-2 px-4 w-full"
+              >
+                {exams.map((exam) => (
+                  <option key={exam.id} value={exam.id}>
+                    {exam.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="mb-4">
+              <label className="block text-left mb-2">Các tùy chọn</label>
+              <input
+                type="text"
+                value={selectedQuestion.options.join(", ") || ""}
+                onChange={(e) =>
+                  setSelectedQuestion({
+                    ...selectedQuestion,
+                    options: e.target.value
+                      .split(",")
+                      .map((option) => option.trim()), // Tách thành mảng
+                  })
                 }
                 className="border border-gray-300 rounded-md py-2 px-4 w-full"
               />
@@ -230,26 +290,10 @@ export default function QuestionsPage() {
                 type="text"
                 value={selectedQuestion.answer || ""}
                 onChange={(e) =>
-                  setSelectedQuestion(
-                    (prev) => prev && { ...prev, answer: e.target.value }
-                  )
-                }
-                className="border border-gray-300 rounded-md py-2 px-4 w-full"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-left mb-2">Tùy chọn</label>
-              <input
-                type="text"
-                value={selectedQuestion.options.join(", ")}
-                onChange={(e) =>
-                  setSelectedQuestion(
-                    (prev) =>
-                      prev && {
-                        ...prev,
-                        options: e.target.value.split(", "),
-                      }
-                  )
+                  setSelectedQuestion({
+                    ...selectedQuestion,
+                    answer: e.target.value,
+                  })
                 }
                 className="border border-gray-300 rounded-md py-2 px-4 w-full"
               />
@@ -262,9 +306,9 @@ export default function QuestionsPage() {
             </button>
             <button
               onClick={closeModal}
-              className="bg-gray-500 text-white px-4 py-2 rounded"
+              className="bg-gray-300 px-4 py-2 rounded"
             >
-              Hủy
+              Đóng
             </button>
           </div>
         </div>
@@ -274,26 +318,77 @@ export default function QuestionsPage() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
           <div className="bg-white p-6 rounded-md text-center">
             <h2 className="text-xl mb-4">Thêm câu hỏi mới</h2>
-            {/* Tương tự như phần chỉnh sửa, thêm các trường nhập liệu cho việc thêm câu hỏi */}
+            <div className="mb-4">
+              <label className="block text-left mb-2">Câu hỏi</label>
+              <input
+                type="text"
+                onChange={(e) =>
+                  setSelectedQuestion((prev: any) => ({
+                    ...prev,
+                    questions: e.target.value,
+                  }))
+                }
+                className="border border-gray-300 rounded-md py-2 px-4 w-full"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-left mb-2">Đề thi</label>
+              <select
+                onChange={(e) =>
+                  setSelectedQuestion((prev: any) => ({
+                    ...prev,
+                    examId: parseInt(e.target.value),
+                  }))
+                }
+                className="border border-gray-300 rounded-md py-2 px-4 w-full"
+              >
+                <option value="">Chọn đề thi</option>
+                {exams.map((exam) => (
+                  <option key={exam.id} value={exam.id}>
+                    {exam.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="mb-4">
+              <label className="block text-left mb-2">Các tùy chọn</label>
+              <input
+                type="text"
+                onChange={(e) =>
+                  setSelectedQuestion((prev: any) => ({
+                    ...prev,
+                    options: e.target.value
+                      .split(",")
+                      .map((option) => option.trim()),
+                  }))
+                }
+                className="border border-gray-300 rounded-md py-2 px-4 w-full"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-left mb-2">Đáp án</label>
+              <input
+                type="text"
+                onChange={(e) =>
+                  setSelectedQuestion((prev: any) => ({
+                    ...prev,
+                    answer: e.target.value,
+                  }))
+                }
+                className="border border-gray-300 rounded-md py-2 px-4 w-full"
+              />
+            </div>
             <button
-              onClick={() =>
-                handleAddQuestion({
-                  id: Date.now(),
-                  questions: "Câu hỏi mới",
-                  examId: 1,
-                  options: ["A", "B", "C", "D"],
-                  answer: "A",
-                })
-              }
-              className="bg-green-500 text-white px-4 py-2 rounded mr-2"
+              onClick={() => handleAddQuestion(selectedQuestion!)}
+              className="bg-blue-500 text-white px-4 py-2 rounded mr-2"
             >
               Thêm
             </button>
             <button
               onClick={closeModal}
-              className="bg-gray-500 text-white px-4 py-2 rounded"
+              className="bg-gray-300 px-4 py-2 rounded"
             >
-              Hủy
+              Đóng
             </button>
           </div>
         </div>
@@ -303,10 +398,8 @@ export default function QuestionsPage() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
           <div className="bg-white p-6 rounded-md text-center">
             <h2 className="text-xl mb-4">Xóa câu hỏi</h2>
-            <p>
-              Bạn có chắc muốn xóa câu hỏi:{" "}
-              <strong>{selectedQuestion.questions}</strong> không?
-            </p>
+            <p>Bạn có chắc chắn muốn xóa câu hỏi này?</p>
+            <p className="font-bold">{selectedQuestion.questions}</p>
             <button
               onClick={handleDeleteQuestion}
               className="bg-red-500 text-white px-4 py-2 rounded mr-2"
@@ -315,9 +408,9 @@ export default function QuestionsPage() {
             </button>
             <button
               onClick={closeModal}
-              className="bg-gray-500 text-white px-4 py-2 rounded"
+              className="bg-gray-300 px-4 py-2 rounded"
             >
-              Hủy
+              Đóng
             </button>
           </div>
         </div>
